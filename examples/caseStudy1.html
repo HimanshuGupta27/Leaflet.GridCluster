@@ -15,7 +15,7 @@
 		
 		<script src="https://code.jquery.com/jquery-2.1.3.min.js"></script>
 		
-		<script src="../src/L.Gridcluster.js"></script>
+		<script src="../src/Leaflet.gridcluster.js"></script>
 
 
 	</head>
@@ -50,7 +50,7 @@
             var tileLayer = L.tileLayer('http://129.206.74.245:8001/tms_r.ashx?x={x}&y={y}&z={z} ').addTo(map);
           
 
-            var gridOverlay = L.gridOverlayLayer({
+            var gridCluster = L.gridCluster({
                 gridSize : 0.015,
                 showGrid : false,
                 showCentroids : true,
@@ -81,31 +81,31 @@
 
                     }).setRadius(7);
                     // station.addTo(markers);
-                    gridOverlay.addLayer(station);
+                    gridCluster.addLayer(station);
 
                 });
 
-                gridOverlay._cluster();
+                gridCluster._cluster();
 
             });
 
             $("#increase").click(function() {
-                gridOverlay.increaseGridSize();
-                $("#currentGridSize").text(gridOverlay._currentGridSize);
+                gridCluster.increaseGridSize();
+                $("#currentGridSize").text(gridCluster._currentGridSize);
             });
 
             $("#decrease").click(function() {
-                gridOverlay.decreaseGridSize();
-                $("#currentGridSize").text(gridOverlay._currentGridSize);
+                gridCluster.decreaseGridSize();
+                $("#currentGridSize").text(gridCluster._currentGridSize);
             });
             $("#showGrid").click(function() {
-                gridOverlay.toggleOption("grid");
+                gridCluster.toggleOption("grid");
             });
             $("#showCells").click(function() {
-                gridOverlay.toggleOption("cells");
+                gridCluster.toggleOption("cells");
             });
             $("#showCentroids").click(function() {
-                gridOverlay.toggleOption("centroids");
+                gridCluster.toggleOption("centroids");
             });
 
 

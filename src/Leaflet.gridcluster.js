@@ -1,8 +1,10 @@
 /*
- * L.GridCluster extends L.FeatureGroup 
- */
+Leaflet.gridcluster
+https://github.com/andy-kay/Leaflet.markercluster
+(c) 2014-2015, Andreas Kiefer, andy-kay
+*/
 
-L.GridOverlayLayer = L.LayerGroup.extend({
+L.GridCluster = L.LayerGroup.extend({
 
     options : {
         gridSize : 1,
@@ -589,6 +591,6 @@ L.GridOverlayLayer = L.LayerGroup.extend({
   
 });
 
-L.gridOverlayLayer = function(options) {
-    return new L.GridOverlayLayer(options);
+L.gridCluster = function(options) {
+    return new L.GridCluster(options);
 };
