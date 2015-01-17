@@ -1,5 +1,5 @@
 /*
- * L.GridClusterGroup extends L.FeatureGroup by clustering the markers contained within
+ * L.GridCluster extends L.FeatureGroup 
  */
 
 L.GridOverlayLayer = L.LayerGroup.extend({
@@ -44,7 +44,7 @@ L.GridOverlayLayer = L.LayerGroup.extend({
         this._clusters = {};
 
         this._worldBounds = {//TODO find the correct values
-            north : 85.0511287798,
+            north : 90, //85.0511287798,
             west : -180,
             east : 180,
             south : -90
@@ -83,9 +83,9 @@ L.GridOverlayLayer = L.LayerGroup.extend({
             return this;
         }
 
-        if (this.hasLayer(layer)) {
-            return this;
-        }
+        // if (this.hasLayer(layer)) {
+            // return this;
+        // }
 
         this._needsClustering.push(layer);
         this._originalFeaturesGroup.addLayer(layer);
@@ -501,6 +501,10 @@ L.GridOverlayLayer = L.LayerGroup.extend({
     },
     increaseGridSize : function() {
         var zoomFactor = this.options.zoomFactor;
+        
+        if(!this._newGridSize){
+            this._newGridSize = this._currentGridSize;
+        }
         this._newGridSize *= zoomFactor;
 
         this._gridSizeChanged();
@@ -508,6 +512,12 @@ L.GridOverlayLayer = L.LayerGroup.extend({
     },
     decreaseGridSize : function() {
         var zoomFactor = this.options.zoomFactor;
+        
+        if(!this._newGridSize){
+            this._newGridSize = this._currentGridSize;
+        }
+        
+        
         this._newGridSize *= 1 / zoomFactor;
         this._gridSizeChanged();
 
