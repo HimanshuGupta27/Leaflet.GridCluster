@@ -1,0 +1,78 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Grid-Cluster with Leaflet</title>
+		<meta charset="utf-8" />
+
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<meta name="author" content="Andreas Kiefer">
+
+		<link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.css" />
+		<script src="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.js"></script>
+
+		<link rel="stylesheet" href="GridCluster.css"/>
+		
+		
+		<script src="https://code.jquery.com/jquery-2.1.3.min.js"></script>
+		
+		<script src="Leaflet.gridcluster.js"></script>
+
+
+	</head>
+	<body>
+		<div id="map" style="width: 600px; height: 600px"></div>
+
+		
+		<div id="description">
+			In this example, the stations of the public bike lending system of Paris are displayed using a grid-based clustering technique.
+		</div>
+
+		<script>
+           
+            var map = L.map('map', { });
+            var tileLayer = L.tileLayer('http://129.206.74.245:8001/tms_r.ashx?x={x}&y={y}&z={z} ').addTo(map);
+          
+
+            var gridCluster = L.gridCluster({
+                gridSize : 0.015,
+                showGrid : false,
+                showCentroids : true,
+ 
+                weightedCentroids : false,
+                minFeaturesToCluster:1,
+                showCells : true,
+                maxZoom : 16,
+                cellStyle : {
+                    color : '#DDD',
+                    opacity : 0.2,
+                    fillOpacity : 0.43
+                },
+                colors : ['rgb(252,146,114)', 'rgb(251,106,74)', 'rgb(239,59,44)', 'rgb(203,24,29)', 'rgb(153,0,13)'] //reds
+            }).addTo(map);
+
+            map.setView([48.85929, 2.34215], 12);
+
+            var bikestations = $.getJSON("bikes-paris.json", function(data) {
+
+                $.each(data.network.stations, function(i, v) {
+
+                    var station = L.circleMarker([v.latitude, v.longitude], {
+                        fillColor : v.free_bikes > 0 ? "green" : "red",
+                        stroke : true,
+                        color : 'black',
+                        fillOpacity : 0.7
+
+                    }).setRadius(7);
+                    // station.addTo(markers);
+                    gridCluster.addLayer(station);
+
+                });
+
+                gridCluster._cluster();
+
+            });
+
+
+		</script>
+	</body>
+</html>
