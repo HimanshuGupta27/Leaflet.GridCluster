@@ -6,6 +6,10 @@ It can be useful for thematic mapping purposes, or to declutter icons.
 
 So far, this project is in an early stage, no professional testing has been done. It works with the inbuilt web Mercator and Plate Carree projections (although the latter looks nicer).
 
+***Demo: http://andy-kay.github.io/Leaflet.GridCluster***
+
+
+***Developed and tested for Leaflet 0.7***
 
 
 ### How to Use It
