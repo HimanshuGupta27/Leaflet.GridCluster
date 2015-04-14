@@ -16,18 +16,16 @@ L.GridCluster = L.LayerGroup.extend({
         showCells : true,
         showCentroids : true,
         weightedCentroids: false,
+        symbolizationVariable: 'value',
         cellStyle : {
             color : 'gray',
             opacity : 0.1,
-
             fillOpacity : 0.5
-
         },
         gridStyle : {
             color : 'gray',
             weight : 1,
             opactiy : 0.8
-
         }
 
     },
@@ -62,6 +60,8 @@ L.GridCluster = L.LayerGroup.extend({
         layers.eachLayer(function(l) {
             this.addLayer(l);
         }, this);
+        
+        this._cluster();
 
     },
     addLayer : function(layer) {
@@ -85,10 +85,6 @@ L.GridCluster = L.LayerGroup.extend({
             return this;
         }
 
-        // if (this.hasLayer(layer)) {
-            // return this;
-        // }
-
         this._needsClustering.push(layer);
         this._originalFeaturesGroup.addLayer(layer);
 
@@ -96,9 +92,6 @@ L.GridCluster = L.LayerGroup.extend({
     },
     clearAll : function() {
         this._originalFeaturesGroup.clearLayers();
-        // this._featureGroup.clearLayers();
-        // this._needsClustering = [];
-        // this._clusters = [];
 
         if (!this._map) {
             this._needsClustering = [];
@@ -115,18 +108,12 @@ L.GridCluster = L.LayerGroup.extend({
 
         this._needsClustering = [];
 
-        // var layers = this._featureGroup.getLayers();
-        //
-        // for (var i = 0; i < layers.length; i++) {
-        //
-        // this._needsClustering.push(layers[i]);
-        // }
         this._cluster();
 
         return this;
 
     },
-    //Returns true if the given layer is in this MarkerClusterGroup
+    
     hasLayer : function(layer) {
         if (!layer) {
             return false;
@@ -140,25 +127,10 @@ L.GridCluster = L.LayerGroup.extend({
             }
         }
 
-        // anArray = this._needsRemoving;
-        // for (i = anArray.length - 1; i >= 0; i--) {
-        // if (anArray[i] === layer) {
-        // return false;
-        // }
-        // }
-
+       
         return !!(layer.__parent && layer.__parent._group === this) || this._nonPointGroup.hasLayer(layer);
     },
-    //Overrides LayerGroup.eachLayer
-    // eachLayer : function(method, context) {
-    // var markers = this._needsClustering.slice(), i;
-    //
-    // for ( i = markers.length - 1; i >= 0; i--) {
-    // method.call(context, markers[i]);
-    // }
-    //
-    // this._nonPointGroup.eachLayer(method, context);
-    // },
+    
     setGridSize : function(interval) {
         this._currentGridSize = interval;
 
@@ -194,7 +166,27 @@ L.GridCluster = L.LayerGroup.extend({
             var state = this.options.showCentroids;
             this.options.showCentroids = state ? false : true;
             break;
+            
+        case "labelPos":
+            var state = this.options.weightedCentroids;
+            this.options.weightedCentroids = state ? false : true;
+            break;
+        
+        case "symbolization":
+            var state = this.options.symbolizationVariable;
+            console.log(state);
+            if(state === "value")
+            {
+                this.options.symbolizationVariable = "size";
+            }
+            if(state === "size")
+            {
+                this.options.symbolizationVariable = "value";
+            }
+            break;
         }
+        
+        
         this._cluster();
 
     },
@@ -249,12 +241,12 @@ L.GridCluster = L.LayerGroup.extend({
         }
 
         this._cluster();
-        // this._mergeSplitClusters();
+        
 
     },
     _cluster : function() {
 
-        // if (!this._needsClustering.length) {
+        
         if (!this._originalFeaturesGroup.getLayers().length) {
             console.log("no points");
             return;
@@ -287,12 +279,6 @@ L.GridCluster = L.LayerGroup.extend({
                 var point = layer.getLatLng();
                 var feature = layer;
 
-                // for (i; i < len; i++) {
-                //
-                // var point = this._needsClustering[i].getLatLng();
-
-                // var feature = this._needsClustering[i];
-
                 // FIRST CHECK, IF LAT IS WITHIN BOUNDS
 
                 if (point.lat >= b.south && point.lat <= b.north) {
@@ -309,17 +295,15 @@ L.GridCluster = L.LayerGroup.extend({
                                     centerLng = k;
                                     break;
                                 }
-
                             }
+                            
                             var j = b.south - gridSize;
                             for (j; j < (b.north + gridSize); j += gridSize) {
                                 if (point.lat <= j) {
                                     centerLat = j;
                                     break;
                                 }
-
                             }
-                            // console.log(centerLat + " | " + centerLng);
 
                             var clusterID = centerLat + "," + centerLng;
 
@@ -347,8 +331,8 @@ L.GridCluster = L.LayerGroup.extend({
                                 clusters[clusterID]["count"] += 1;
                                 var count = clusters[clusterID]["count"];
                                 clusters[clusterID].features.push(feature);
-
-                                // for statistics TODO
+                                
+                                // for statistics 
                                 this._maxFeatures = count > this._maxFeatures ? count : this._maxFeatures;
                                 this._minFeatures = count < this._minFeatures ? count : this._minFeatures;
 
@@ -374,7 +358,6 @@ L.GridCluster = L.LayerGroup.extend({
 
                         var style = this.options.cellStyle;
                         style.fillColor = color;
-                        // style.color = color;
 
                         cluster.polygon.setStyle(style).bindPopup(count + " Features");
 
@@ -383,27 +366,26 @@ L.GridCluster = L.LayerGroup.extend({
                         this._featureGroup.addLayer(cluster.features[0]);
                     }
 
-                    // pointSize *= pointSize;
-
                     if (this.options.showCentroids && cluster.count > this.options.minFeaturesToCluster) {
 
-                        var pointSize = 50;
+                        var iconSize = 40;
                         var color = this._getColor(count);
                         var clusterLatLng = cluster.latLng;
                         
                         if (this.options.weightedCentroids) {
 
                                 clusterLatLng = this._calculateCentre(cluster.features);
-                                
-
                             }
                         
-                        
-
                         var i = 10, className;
 
                         if (!this.options.showCells) {
                             className = i > count ? "small" : 100 > count ? "medium" : "large";
+                             // className =  "small" ;
+                             if(this.options.symbolizationVariable === "size" || this.options.symbolizationVariable ==='valuesize'){
+                                 className += " size";
+                            iconSize = i > count ? 40 : 100 > count ? 50 : 70;
+                            }
                             
                         } else {
 
@@ -413,21 +395,14 @@ L.GridCluster = L.LayerGroup.extend({
                         var myIcon = new L.DivIcon({
                             html : "<div><span>" + count + "</span></div>",
                             className : "marker-cluster marker-cluster-" + className,
-                            iconSize : this.options.showCells === true ? new L.Point(30, 30) : new L.Point(40, 40)
+                            // iconSize : this.options.showCells === true ? new L.Point(30, 30) : new L.Point(40, 40)
+                            iconSize : this.options.showCells === true ? new L.Point(30, 30) : new L.Point(iconSize, iconSize)
                         });
 
                         var marker = L.marker(clusterLatLng, {
                             icon : myIcon
                         });
 
-                        // var marker = L.circleMarker(cluster.latLng,  {
-                        // color : color,
-                        // fillColor : color,
-                        // fillOpacity : 0.8,
-                        // radius:10,
-                        // title : count
-                        //
-                        // }).bindPopup(count);
                         this._featureGroup.addLayer(marker);
                     }
                 }
@@ -481,7 +456,6 @@ L.GridCluster = L.LayerGroup.extend({
 
         var color;
 
-        // for (var i = num_class  ; i >= 0; i--) {
         for (var i = 0; i < num_class; i++) {
 
             if (count <= class_def[i]) {
@@ -493,7 +467,6 @@ L.GridCluster = L.LayerGroup.extend({
 
         }
 
-        // console.log(count + " | " + color);
 
         return color;
 
