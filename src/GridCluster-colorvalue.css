@@ -1,0 +1,102 @@
+.marker-cluster {
+	background-clip: padding-box;
+	border-radius: 20px;
+	color: white;
+}
+.marker-cluster div {
+	border-radius: 15px;
+	font: 12px "Helvetica Neue", Arial, Helvetica, sans-serif;
+	height: 30px;
+	margin-left: 5px;
+	margin-top: 5px;
+	text-align: center;
+	width: 30px;
+}
+.marker-cluster span {
+	line-height: 30px;
+}
+.marker-cluster.cells span {
+	background-color: rgba(255, 255, 255, 0.57);
+	border-radius: 5px;
+	line-height: 30px;
+	padding: 2px;
+}
+.cells div {
+	color: #444;
+	font-weight: bold;
+	margin: 0 !important;
+}
+
+.marker-cluster-small {
+	background-color: rgba(116,196,118, 0.9);
+}
+.marker-cluster-small div {
+	background-color: rgba(116,196,118, 0.9);
+	height: 30px;
+	width: 30px;
+	margin-left:5px;
+	margin-top:5px;
+}
+.marker-cluster-small.size {
+	background-color: rgba(35,139,69, 0.8); /*greens */
+}
+
+.marker-cluster-small.size div {
+	background-color: rgba(35,139,69, 0.8); /*greens */
+	margin-left:5px;
+	margin-top:5px;
+}
+
+.marker-cluster-medium {
+	background-color: rgba(49,163,84, 0.8); /* greens*/
+}
+.marker-cluster-medium div {
+	background-color: rgba(49,163,84, 0.8); /* greens*/
+}
+
+.marker-cluster-medium.size {
+	border-radius: 25px !important;
+	background-color: rgba(35,139,69, 0.8); /*greens */
+}
+
+.marker-cluster-medium.size div {
+	margin-left: 10px;
+	margin-top: 10px;
+	background-color: rgba(35,139,69, 0.8); /*greens */
+}
+
+.marker-cluster-large {
+	background-color: rgba(35,139,69, 0.8); /*greens */
+}
+.marker-cluster-large div {
+	background-color: rgba(35,139,69, 0.8); /*greens */
+}
+
+.marker-cluster-large.size {
+	border-radius: 35px !important;
+}
+
+.marker-cluster-large.size div {
+	margin-left: 20px;
+	margin-top: 20px;
+}
+
+.leaflet-oldie .marker-cluster-small {
+	background-color: rgb(181, 226, 140);
+}
+.leaflet-oldie .marker-cluster-small div {
+	background-color: rgb(110, 204, 57);
+}
+.leaflet-oldie .marker-cluster-medium {
+	background-color: rgb(241, 211, 87);
+}
+.leaflet-oldie .marker-cluster-medium div {
+	background-color: rgb(240, 194, 12);
+}
+.leaflet-oldie .marker-cluster-large {
+	background-color: rgb(253, 156, 115);
+}
+.leaflet-oldie .marker-cluster-large div {
+	background-color: rgb(241, 128, 23);
+}
+

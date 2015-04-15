@@ -10,54 +10,95 @@
 		<link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.css" />
 		<script src="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.js"></script>
 
-		<link rel="stylesheet" href="../src/GridCluster.css"/>
-		
-		
+		<link rel="stylesheet" href="../src/GridCluster-colorvalue.css"/>
+
 		<script src="https://code.jquery.com/jquery-2.1.3.min.js"></script>
-		
+
 		<script src="../src/Leaflet.gridcluster.js"></script>
 
+		<style>
+			body {
+				font: 1em sans-serif;
+			}
+			p {
+				margin-bottom: 1em;
+			}
+			#controls {
+				position: absolute;
+				z-index: 100000;
+				bottom: 1em;
+				left: 1em;
+				background-color: rgba(60,60,60,0.8);
+				padding: 1em;
+				color: white;
+			}
+
+		</style>
 
 	</head>
 	<body>
-		<div id="map" style="width: 600px; height: 600px"></div>
-
-		<div id="controls">
-			Gridsize: <span id="currentGridSize"></span>
-			<button id="increase">
-				Increase
-			</button>
-			<button id="decrease">
-				Decrease
-			</button>
-			<button id="showCells">
-				Toggle Cells
-			</button>
-			<button id="showCentroids">
-				Toggle Centroids
-			</button>
-			<button id="showGrid">
-				Toggle Grid
-			</button>
-		</div>
 		<div id="description">
-			In this example, the stations of the public bike lending system of Paris are displayed using a grid-based clustering technique.
+			<h2>Bike Stations in Paris</h2>
+			<p>
+				In this example, the stations of the public bike lending system of Paris are displayed using a grid-based clustering technique.
+			</p>
+
+		</div>
+		<div id="map" style="width: 100%; height: 600px">
+
+			<div id="controls">
+				Gridsize: <span id="currentGridSize"></span>
+				<button id="increase">
+					Increase
+				</button>
+				<button id="decrease">
+					Decrease
+				</button>
+				<button id="showCells">
+					Toggle Cells
+				</button>
+				<button id="showCentroids">
+					Toggle Centroids
+				</button>
+				<button id="labelPosition" title="Toggle Label Position: Geometric Center / average Feature Location">
+					Label Position
+				</button>
+				<button id="symbolization">
+					Symbol Size / Colour
+				</button>
+				<button id="showGrid">
+					Toggle Grid
+				</button>
+			</div>
+		</div>
+		<div>
+			&copy; 2015: <a href="mailto:andreas.kiefer@univie.ac.at">Andreas Kiefer</a>
 		</div>
 
 		<script>
-           
             var map = L.map('map', { });
-            var tileLayer = L.tileLayer('http://129.206.74.245:8001/tms_r.ashx?x={x}&y={y}&z={z} ').addTo(map);
-          
+            // var tileLayer = L.tileLayer('http://129.206.74.245:8001/tms_r.ashx?x={x}&y={y}&z={z} ',{
+            // attribution: 'Map Data: © <a href="http://www.openstreetmap.org/">OpenStreetMap</a> contributors'
+            // }).addTo(map);
+            // L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
+            // attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+            // }).addTo(map);
+
+            // MAPBOX
+
+            var mapboxToken = 'pk.eyJ1IjoiYW5keWtheSIsImEiOiJkYWEwVmNvIn0.u3rKjGASiQ8edIO0qiya-A';
+            L.tileLayer('http://api.tiles.mapbox.com/v4/mapbox.run-bike-hike/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoiYW5keWtheSIsImEiOiJkYWEwVmNvIn0.u3rKjGASiQ8edIO0qiya-A', {
+                 attribution : "<a href='https://www.mapbox.com/about/maps/' target='_blank'>&copy; Mapbox &copy; OpenStreetMap</a> <a class='mapbox-improve-map' href='https://www.mapbox.com/map-feedback/' target='_blank'>Improve this map</a>"
+            }).addTo(map);
 
             var gridCluster = L.gridCluster({
-                gridSize : 0.015,
+                gridSize : 0.035,
                 showGrid : false,
                 showCentroids : true,
- 
+                symbolizationVariable : 'size',
                 weightedCentroids : false,
-                minFeaturesToCluster:1,
-                showCells : true,
+                minFeaturesToCluster : 1,
+                showCells : false,
                 maxZoom : 16,
                 cellStyle : {
                     color : '#DDD',
@@ -80,6 +121,7 @@
                         fillOpacity : 0.7
 
                     }).setRadius(7);
+                    station.bindPopup("<h3>" + v.name + "</h3>Free Bikes: " + v.free_bikes);
                     // station.addTo(markers);
                     gridCluster.addLayer(station);
 
@@ -107,7 +149,12 @@
             $("#showCentroids").click(function() {
                 gridCluster.toggleOption("centroids");
             });
-
+            $("#labelPosition").click(function() {
+                gridCluster.toggleOption("labelPos");
+            });
+            $("#symbolization").click(function() {
+                gridCluster.toggleOption("symbolization");
+            });
 
 		</script>
 	</body>
