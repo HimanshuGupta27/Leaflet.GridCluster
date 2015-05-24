@@ -2,6 +2,7 @@
 Leaflet.gridcluster
 https://github.com/andy-kay/Leaflet.markercluster
 (c) 2014-2015, Andreas Kiefer, andy-kay
+
 */
 
 L.GridCluster = L.LayerGroup.extend({
@@ -9,7 +10,7 @@ L.GridCluster = L.LayerGroup.extend({
     options : {
         gridSize : 1,
         zoomFactor : 2,
-        minFeaturesToCluster: 1,
+        minFeaturesToCluster: 2,
         colors : ['rgb(255,255,204)', 'rgb(255,237,160)', 'rgb(254,217,118)', 'rgb(254,178,76)', 'rgb(253,141,60)', 'rgb(252,78,42)', 'rgb(227,26,28)', 'rgb(177,0,38)'],
         maxZoom : 16,
         showGrid : true,
