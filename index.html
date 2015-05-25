@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Grid-Cluster with Leaflet</title>
+		<meta charset="utf-8" />
+
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<meta name="author" content="Andreas Kiefer">
+
+		<link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.css" />
+		<link rel="stylesheet" href="src/GridCluster-colorvalue.css"/>
+		<script src="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.js"></script>
+		<script src="https://code.jquery.com/jquery-2.1.3.min.js"></script>
+
+		<script src="src/eaflet.gridcluster.js"></script>
+		<script src="bikes-paris.js"></script>
+
+		<style>
+			body {
+				font: 1em sans-serif;
+			}
+			p {
+				margin-bottom: 1em;
+			}
+			#controls {
+				position: absolute;
+				z-index: 100000;
+				bottom: 1em;
+				left: 1em;
+				background-color: rgba(60,60,60,0.8);
+				padding: 1em;
+				color: white;
+			}
+
+		</style>
+
+	</head>
+	<body>
+		<div id="description">
+			<h2>Leaflet.GridCluster</h2>
+			<p>
+				In this example, the stations of the public bike lending system of Paris are displayed using a <strong>grid-based </strong>clustering technique.
+			</p>
+
+		</div>
+		<div id="map" style="width: 100%; height: 600px">
+
+			<div id="controls">
+				Gridsize: <span id="currentGridSize"></span>
+				<button id="increase">
+					Increase
+				</button>
+				<button id="decrease">
+					Decrease
+				</button>
+				<button id="showCells">
+					Toggle Cells
+				</button>
+				<button id="showCentroids">
+					Toggle Centroids
+				</button>
+				<button id="labelPosition" title="Toggle Label Position: Geometric Center / average Feature Location">
+					Label Position
+				</button>
+				<button id="symbolization">
+					Symbol Size / Colour
+				</button>
+				<button id="showGrid">
+					Toggle Grid
+				</button>
+			</div>
+
+			<script>
+				var map = L.map('map', { });
+				var tileLayer = L.tileLayer('http://129.206.74.245:8001/tms_r.ashx?x={x}&y={y}&z={z} ').addTo(map);
+
+				var gridCluster = L.gridCluster({
+					gridSize : 0.035,
+					showGrid : false,
+					// showCentroids : true,
+					symbolizationVariable : 'size',
+					// weightedCentroids : false,
+					// minFeaturesToCluster : 1,
+					showCells : false,
+					maxZoom : 16
+				}).addTo(map);
+				map.setView([48.85929, 2.34215], 12);
+
+				var layers = L.geoJson(stations, { });
+				gridCluster.addLayers(layers);
+				
+				/*
+				 * Button Controls
+				 */
+
+				$("#increase").click(function() {
+					gridCluster.increaseGridSize();
+					$("#currentGridSize").text(gridCluster._currentGridSize);
+				});
+
+				$("#decrease").click(function() {
+					gridCluster.decreaseGridSize();
+					$("#currentGridSize").text(gridCluster._currentGridSize);
+				});
+				$("#showGrid").click(function() {
+					gridCluster.toggleOption("grid");
+				});
+				$("#showCells").click(function() {
+					gridCluster.toggleOption("cells");
+				});
+				$("#showCentroids").click(function() {
+					gridCluster.toggleOption("centroids");
+				});
+				$("#labelPosition").click(function() {
+					gridCluster.toggleOption("labelPos");
+				});
+				$("#symbolization").click(function() {
+					gridCluster.toggleOption("symbolization");
+				});
+
+			</script>
+	</body>
+</html>
