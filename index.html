@@ -13,16 +13,18 @@
 		<script src="https://code.jquery.com/jquery-2.1.3.min.js"></script>
 
 		<script src="src/Leaflet.gridcluster.js"></script>
-		<script src="examples/bikes-paris.js"></script>
+		<script src="examples/countries-110m.js"></script>
 
 		<style>
 			body {
-				font: 1em sans-serif;
+				font-family: sans-serif;
 			}
-			p {
-				margin-bottom: 1em;
+			#map {
+				background-color: #111;
+				height: 450px;
+				width: 99%;
 			}
-			#controls {
+			.controls {
 				position: absolute;
 				z-index: 100000;
 				bottom: 1em;
@@ -31,91 +33,64 @@
 				padding: 1em;
 				color: white;
 			}
-
+			
 		</style>
 
 	</head>
 	<body>
 		<div id="description">
 			<h2>Leaflet.GridCluster</h2>
+			<h3>Earthquakes!</h3>
+			<h3>This animated map shows recorded incidents for the years 2010 - 2014. Push "Animate!". </h3>
 			<p>
-				In this example, the stations of the public bike lending system of Paris are displayed using a <strong>grid-based </strong>clustering technique.
+				Map created using Leaflet.js, data visualization using the Leaflet.GridCluster Plugin.
+				<br>
+				Data source: <a href="http://earthquake.usgs.gov/earthquakes/search/" target="_blank">USGS</a>.
+
 			</p>
 			
 
 		</div>
-		<div id="map" style="width: 100%; height: 600px">
+		<div id="map" style="width: 100%; height: 600px; ">
 
-			<div id="controls">
-				Gridsize: <span id="currentGridSize"></span>
-				<button id="increase">
-					Increase
+			<div id="controls" class="controls">
+
+				<button type="button" class="btn btn-primary btn-xs" id="startAnimation">
+					animate!
 				</button>
-				<button id="decrease">
-					Decrease
+				<span id="label" class="text-right"> </span>
+
+				<div>
+					Gridsize: <span id="currentGridSize"></span>
+
+				</div>
+
+				<button id="increase" type="button" class="btn btn-primary btn-xs" title="Increase Grid Size">
+					+
 				</button>
-				<button id="showCells">
-					Toggle Cells
+				<button id="decrease" type="button" class="btn btn-primary btn-xs" title="Decrease Grid Size">
+					-
 				</button>
-				<button id="showCentroids">
-					Toggle Centroids
+				<button id="showCells" title="Show / Hide Cells" type="button" class="btn btn-primary btn-xs">
+					Cells
 				</button>
-				<button id="labelPosition" title="Toggle Label Position: Geometric Center / average Feature Location">
+				<button id="showCentroids" title=" Show / Hide Centroids" type="button" class="btn btn-primary btn-xs">
+					Centroids
+				</button>
+				<button id="showGrid" title="Show / Hide Grid" type="button" class="btn btn-primary btn-xs">
+					Grid
+				</button>
+				<button id="labelPosition" title="Toggle Label Position: Geometric Center / average Feature Location" type="button" class="btn btn-primary btn-xs">
 					Label Position
 				</button>
-				<button id="symbolization">
+				<button id="symbolization" type="button" class="btn btn-primary btn-xs">
 					Symbol Size / Colour
 				</button>
-				<button id="showGrid">
-					Toggle Grid
-				</button>
+
 			</div>
 
-			<script>
-				var map = L.map('map', { });
-				var tileLayer = L.tileLayer('http://129.206.74.245:8001/tms_r.ashx?x={x}&y={y}&z={z} ').addTo(map);
+		</div>
 
-				var gridCluster = L.gridCluster({
-					gridSize : 0.035,
-					showGrid : false,
-					symbolizationVariable : 'size',
-					showCells : false,
-					maxZoom : 16
-				}).addTo(map);
-				map.setView([48.85929, 2.34215], 12);
-
-				var layers = L.geoJson(stations, { });
-				gridCluster.addLayers(layers);
-
-				/*
-				 * Button Controls
-				 */
-
-				$("#increase").click(function() {
-					gridCluster.increaseGridSize();
-					$("#currentGridSize").text(gridCluster._currentGridSize);
-				});
-
-				$("#decrease").click(function() {
-					gridCluster.decreaseGridSize();
-					$("#currentGridSize").text(gridCluster._currentGridSize);
-				});
-				$("#showGrid").click(function() {
-					gridCluster.toggleOption("grid");
-				});
-				$("#showCells").click(function() {
-					gridCluster.toggleOption("cells");
-				});
-				$("#showCentroids").click(function() {
-					gridCluster.toggleOption("centroids");
-				});
-				$("#labelPosition").click(function() {
-					gridCluster.toggleOption("labelPos");
-				});
-				$("#symbolization").click(function() {
-					gridCluster.toggleOption("symbolization");
-				});
-
-			</script>
+		<script src="examples/earthquakes.js"></script>
 	</body>
 </html>

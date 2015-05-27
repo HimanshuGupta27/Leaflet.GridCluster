@@ -57,7 +57,7 @@ var years = [2010, 2011, 2012, 2013, 2014];
  *
  */
 
-$.getJSON("./earthquakes.json", function(data) {
+$.getJSON("examples/earthquakes.json", function(data) {
 
     $.each(data.features, function(key, val) {
 
