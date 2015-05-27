@@ -1,3 +1,5 @@
+
+
 /*
 Leaflet.gridcluster
 https://github.com/andy-kay/Leaflet.markercluster
@@ -93,6 +95,7 @@ L.GridCluster = L.LayerGroup.extend({
     },
     clearAll : function() {
         this._originalFeaturesGroup.clearLayers();
+        this._clusters = {};
 
         if (!this._map) {
             this._needsClustering = [];
@@ -142,10 +145,14 @@ L.GridCluster = L.LayerGroup.extend({
 
     },
     toggleOption : function(attribute) {
+    	
+    	var state;
+    	
         switch (attribute) {
         case "grid":
 
-            var state = this.options.showGrid;
+            state = this.options.showGrid;
+            
             if (state) {
                 this.options.showGrid = false;
                 this._gridLinesGroup.clearLayers();
@@ -158,24 +165,23 @@ L.GridCluster = L.LayerGroup.extend({
 
         case "cells":
 
-            var state = this.options.showCells;
+            state = this.options.showCells;
             this.options.showCells = state ? false : true;
             break;
 
         case "centroids":
 
-            var state = this.options.showCentroids;
+            state = this.options.showCentroids;
             this.options.showCentroids = state ? false : true;
             break;
             
         case "labelPos":
-            var state = this.options.weightedCentroids;
+            state = this.options.weightedCentroids;
             this.options.weightedCentroids = state ? false : true;
             break;
         
         case "symbolization":
-            var state = this.options.symbolizationVariable;
-            console.log(state);
+            state = this.options.symbolizationVariable;
             if(state === "value")
             {
                 this.options.symbolizationVariable = "size";
@@ -329,8 +335,8 @@ L.GridCluster = L.LayerGroup.extend({
                                     polygon : polygon
                                 };
                             } else {
-                                clusters[clusterID]["count"] += 1;
-                                var count = clusters[clusterID]["count"];
+                                clusters[clusterID].count += 1;
+                                var count = clusters[clusterID].count;
                                 clusters[clusterID].features.push(feature);
                                 
                                 // for statistics 
@@ -347,15 +353,18 @@ L.GridCluster = L.LayerGroup.extend({
 
             if (zoomLevel < this.options.maxZoom) {
 
-                for (prop in this._clusters) {
+                for (var prop in this._clusters) {
 
                     var count = this._clusters[prop].count;
                     var cluster = this._clusters[prop];
-
+                    var color ;
+                    
+                    
                     if (this.options.showCells && cluster.count > this.options.minFeaturesToCluster) {
                         this._featureGroup.addLayer(cluster.polygon);
 
-                        var color = this._getColor(count);
+                        color = this._getColor(count);
+                        
 
                         var style = this.options.cellStyle;
                         style.fillColor = color;
@@ -370,7 +379,7 @@ L.GridCluster = L.LayerGroup.extend({
                     if (this.options.showCentroids && cluster.count > this.options.minFeaturesToCluster) {
 
                         var iconSize = 40;
-                        var color = this._getColor(count);
+                        color = this._getColor(count);
                         var clusterLatLng = cluster.latLng;
                         
                         if (this.options.weightedCentroids) {
@@ -378,14 +387,14 @@ L.GridCluster = L.LayerGroup.extend({
                                 clusterLatLng = this._calculateCentre(cluster.features);
                             }
                         
-                        var i = 10, className;
+                        var iconHelper = 10, className;
 
                         if (!this.options.showCells) {
-                            className = i > count ? "small" : 100 > count ? "medium" : "large";
+                            className = iconHelper > count ? "small" : 100 > count ? "medium" : "large";
                              // className =  "small" ;
                              if(this.options.symbolizationVariable === "size" || this.options.symbolizationVariable ==='valuesize'){
                                  className += " size";
-                            iconSize = i > count ? 40 : 100 > count ? 50 : 70;
+                            iconSize = iconHelper > count ? 40 : 100 > count ? 50 : 70;
                             }
                             
                         } else {
@@ -448,19 +457,20 @@ L.GridCluster = L.LayerGroup.extend({
         var num_class = colors.length;
 
         class_def[0] = minFeatures;
-        for (var i = 1; i < num_class; i++) {
+        var i = 1;
+        for (i; i < num_class; i++) {
             class_def[i] = Math.round(minFeatures + (step * i));
 
         }
 
         class_def[num_class] = maxFeatures;
 
-        var color;
+        var color = " green", j = 0;
 
-        for (var i = 0; i < num_class; i++) {
+        for (j; j < num_class; j++) {
 
-            if (count <= class_def[i]) {
-                color = colors[i];
+            if (count <= class_def[j]) {
+                color = colors[j];
                 break;
             } else {
                 color = colors[num_class - 1];
@@ -522,9 +532,10 @@ L.GridCluster = L.LayerGroup.extend({
 
         var b = this._getVisibleBounds();
         var i = b.west;
+        var j = b.south;
 
         for (i; i < b.east; i += gridSize) {
-            var j = b.south;
+            
 
             var verticals = L.polyline([[b.south, i], [b.north, i]], this.options.gridStyle);
             this._gridLinesGroup.addLayer(verticals);
