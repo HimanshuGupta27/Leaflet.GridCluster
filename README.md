@@ -29,10 +29,12 @@ and done ;)
 
 ### Defaults
 
-By the default, the following options are enabled:
+By the default, the following options are set / enabled:
 * ***showGrid*** : Draws the grid structure on the map
 * ***showCells*** : Color coded cells will be used as cluster symbolizations
 * ***showCentroids*** : Label the amount of features contained by each cluster
+*
+
  
 
 ### Customize It!
@@ -44,6 +46,7 @@ At the moment, the following options can be adjusted:
 * ***colors*** : an array with color definitions (RGB, HEX will do). Amount of colors will determine the amount of classes
 * ***maxZoom*** : until which zoom level should the clustering be done?
 * ***weightedCentroids***: determines the position of the labels within each cell
+* ***symbolizationVariable***: 'value' or 'size'. Style the cluster markers using color values or marker size.
 * ***cellStyle*** : customize the styling of the cell like that: 
 ```javascript 
 {
@@ -63,7 +66,7 @@ At the moment, the following options can be adjusted:
 ### Methods
 
 * ***increaseGridSize()*** / ***decreaseGridSize()***: to manually adjust the gridsize by the factor set in the options
-* ***toggleOption(option)***: to turn on/off the following options: ***grid***, ***cell***, ***centroids***
+* ***toggleOption(option)***: to turn on/off the following options: ***grid***, ***cell***, ***centroids***, ***labelPos***, ***symbolization***
 
 
 ### Adding and Removing features
