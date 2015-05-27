@@ -1,5 +1,3 @@
-
-
 /*
 Leaflet.gridcluster
 https://github.com/andy-kay/Leaflet.markercluster
@@ -57,9 +55,6 @@ L.GridCluster = L.LayerGroup.extend({
 
     },
     addLayers : function(layers) {
-
-        console.log(layers);
-
         layers.eachLayer(function(l) {
             this.addLayer(l);
         }, this);

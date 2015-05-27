@@ -42,29 +42,5 @@ describe('addLayer adding a single marker', function () {
 		
 		expect(Object.keys(group._clusters).length).toBe(1);
 	});
-/*
-
-
-	it('does not appear when too far away when added before the group is added to the map', function () {
-
-		var group = new L.MarkerClusterGroup();
-		var marker = new L.Marker([3.5, 1.5]);
-
-		group.addLayer(marker);
-		map.addLayer(group);
-
-		expect(marker._icon).to.be(undefined);
-	});
-	it('does not appear when too far away when added after the group is added to the map', function () {
-
-		var group = new L.MarkerClusterGroup();
-		var marker = new L.Marker([3.5, 1.5]);
-
-		map.addLayer(group);
-		group.addLayer(marker);
-
-		expect(marker._icon).to.be(undefined);
-	});
-*/
 
 });
