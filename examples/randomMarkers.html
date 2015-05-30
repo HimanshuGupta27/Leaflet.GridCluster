@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 	<head>
-		<title>Grid-Cluster with Leaflet</title>
+		<title>GridCluster with Leaflet - Random Points</title>
 		<meta charset="utf-8" />
 
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -38,10 +38,6 @@
 	</head>
 	<body>
 		<div id="description">
-			<h2>Bike Stations in Paris</h2>
-			<p>
-				In this example, the stations of the public bike lending system of Paris are displayed using a grid-based clustering technique.
-			</p>
 
 		</div>
 		<div id="map" style="width: 100%; height: 600px">
@@ -49,10 +45,10 @@
 			<div id="controls">
 				Gridsize: <span id="currentGridSize"></span>
 				<button id="increase">
-					+
+					Increase
 				</button>
 				<button id="decrease">
-					-
+					Decrease
 				</button>
 				<button id="showCells">
 					Toggle Cells
@@ -72,6 +68,7 @@
 				<button id="showGrid">
 					Toggle Grid
 				</button>
+				<button id="addPoints">Add 1k Points</button>
 			</div>
 		</div>
 		<div>
@@ -80,7 +77,9 @@
 
 		<script>
 			var map = L.map('map', { });
-		
+
+			// MAPBOX
+
 			L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
 			attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
 			}).addTo(map);
@@ -99,34 +98,15 @@
 					opacity : 0.2,
 					fillOpacity : 0.43
 				},
-				colors : ['rgb(252,146,114)', 'rgb(251,106,74)', 'rgb(239,59,44)', 'rgb(203,24,29)', 'rgb(153,0,13)'] //reds
-				
+				// colors : ['rgb(252,146,114)', 'rgb(251,106,74)', 'rgb(239,59,44)', 'rgb(203,24,29)', 'rgb(153,0,13)'] //reds
+				colors: ['red', 'yellow', 'green']
 			}).addTo(map);
 
 			map.setView([48.85929, 2.34215], 12);
-			
-			
 
-			var bikestations = $.getJSON("bikes-paris.json", function(data) {
+			var markers = L.featureGroup().addTo(map);
 
-				$.each(data.network.stations, function(i, v) {
-
-					var station = L.circleMarker([v.latitude, v.longitude], {
-						fillColor : v.free_bikes > 0 ? "green" : "red",
-						stroke : true,
-						color : 'black',
-						fillOpacity : 0.2
-
-					}).setRadius(3);
-					station.bindPopup("<h3>" + v.name + "</h3>Free Bikes: " + v.free_bikes);
-					
-					gridCluster.addLayer(station);
-
-				});
-
-				gridCluster._cluster();
-
-			});
+			populate(5000);
 
 			$("#increase").click(function() {
 				gridCluster.increaseGridSize();
@@ -153,6 +133,43 @@
 				var value = this.value;
 				gridCluster.toggleOption("symbolization", value);
 			});
+			
+			$("#addPoints").click(function(){
+				populate();
+			});
+			
+			
+			// taken from https://github.com/Leaflet/Leaflet.markercluster/blob/master/example/marker-clustering.html
+			
+
+			function populate(count) {
+				
+				var count = count || 1000;
+				
+				for (var i = 0; i < count; i++) {
+					var m = new L.circleMarker(getRandomLatLng(map), {
+						fillColor :"green",
+						stroke : true,
+						color : 'black',
+						fillOpacity : 0.2
+
+					}).setRadius(3);
+					
+					gridCluster.addLayer(m);
+				}
+				gridCluster._cluster();
+				return false;
+			}
+
+			function getRandomLatLng(map) {
+				var bounds = map.getBounds(),
+				    southWest = bounds.getSouthWest(),
+				    northEast = bounds.getNorthEast(),
+				    lngSpan = northEast.lng - southWest.lng,
+				    latSpan = northEast.lat - southWest.lat;
+
+				return new L.LatLng(southWest.lat + latSpan * Math.random(), southWest.lng + lngSpan * Math.random());
+			}
 
 		</script>
 	</body>
