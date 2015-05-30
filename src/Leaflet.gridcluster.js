@@ -32,7 +32,7 @@ L.GridCluster = L.FeatureGroup.extend({
 			color : '#013ADF',
 			fillColor: '#013ADF',
 			fillOpacity : 0.8,
-			radius: 30
+			radius: 20
 		}
 
 	},
@@ -61,7 +61,7 @@ L.GridCluster = L.FeatureGroup.extend({
 		};
 
 		this._maxFeatures = 0;
-		this._minSymbolSize = 20;
+		this._minSymbolSize = this.options.symbolStyle.radius;
 
 	},
 	addLayers : function(layers) {
@@ -322,7 +322,7 @@ L.GridCluster = L.FeatureGroup.extend({
 									break;
 								}
 							}
-
+							//create a unique ID for the cell
 							var clusterID = centerLat + "," + centerLng;
 
 							var clusters = this._clusters;
@@ -348,15 +348,17 @@ L.GridCluster = L.FeatureGroup.extend({
 									polygon : polygon
 								};
 								
-								// var latlngA = polygon.getBounds().getNorthWest();
-								// var latlngB = polygon.getBounds().getNorthEast();
-								var latlngA = polygon.getBounds().getNorthWest();
-								var latlngB = polygon.getBounds().getNorthEast();
 								
+								
+								
+								//calculate the maxSymbolSize ONCE
 								if(this._maxSymbolSize === 0){
+									
+									var latlngA = polygon.getBounds().getNorthWest();
+									var latlngB = polygon.getBounds().getNorthEast();
 									//calculate the max. size of the symbol and add a buffer so they don't touch each other
 									this._maxSymbolSize = Math.ceil( this._map.latLngToLayerPoint(latlngA).distanceTo(map.latLngToLayerPoint(latlngB)) )* 0.9;
-									console.log(this._maxSymbolSize);
+									
 								}
 							} else {
 								clusters[clusterID].count += 1;
@@ -377,7 +379,9 @@ L.GridCluster = L.FeatureGroup.extend({
 
 			if (zoomLevel < this.options.maxZoom) {
 
-				this._classDefinitions = this._calculateClasses(this.options.colors.length);
+				this._numClasses = this.options.colors.length - 1;
+				this._classDefinitions = this._calculateClasses(this._numClasses);
+				
 
 				for (var prop in this._clusters) {
 
@@ -388,7 +392,11 @@ L.GridCluster = L.FeatureGroup.extend({
 					if (this.options.showCells && cluster.count > this.options.minFeaturesToCluster) {
 						this._clusterCellsGroup.addLayer(cluster.polygon);
 
-						color = this._getColor(count);
+						// color = this._getColor(count);
+						
+						color = this._getClassValue(count, this._classDefinitions, this.options.colors);
+						
+						console.log(count + " has " + color);
 
 						var style = this.options.cellStyle;
 						style.fillColor = color;
@@ -457,7 +465,7 @@ L.GridCluster = L.FeatureGroup.extend({
 			
 			var min = this._minSymbolSize;
 			var max = this._maxSymbolSize;
-			var numClasses = this.options.colors.length;
+			var numClasses = this._numClasses;
 			
 			this._symbolSizeDefinitions = this._calculateClasses(numClasses, min, max);
 			
@@ -468,7 +476,7 @@ L.GridCluster = L.FeatureGroup.extend({
 		}
 		if (this.options.symbolizationVariable === "value" || this.options.symbolizationVariable === 'valuesize') {
 
-			var color = this._getColor(count);
+			var color = this._getClassValue(count, this._classDefinitions, this.options.colors);
 			symbol.setStyle({
 				fillColor : color,
 				fillOpacity : 0.8,
@@ -499,29 +507,6 @@ L.GridCluster = L.FeatureGroup.extend({
 		return latLng;
 	},
 
-	_getColor : function(count) {
-
-		var colors = this.options.colors;
-		var numClasses = colors.length;
-
-		var classDef = this._classDefinitions || this._calculateClasses(numClasses);
-		var color = " green",
-		    j = 0;
-
-		for (j; j < numClasses; j++) {
-
-			if (count <= classDef[j]) {
-				color = colors[j];
-				break;
-			} else {
-				color = colors[numClasses - 1];
-			}
-
-		}
-
-		return color;
-
-	},
 	_calculateClasses : function(numClasses, min, max) {
 
 		var classDefinitions = [];
@@ -549,6 +534,10 @@ L.GridCluster = L.FeatureGroup.extend({
 
 		var numClasses = classDef.length;
 		
+		if(numClasses != representDef.length){
+			console.log("uh oh : NumClasses " + numClasses + " !=" + representDef.length);
+			
+		}
 		var value;
 		var j = 0;
 
@@ -558,7 +547,7 @@ L.GridCluster = L.FeatureGroup.extend({
 				value = representDef[j];
 				break;
 			} else {
-				value = representDef[numClasses - 1];
+				value = representDef[numClasses];
 			}
 
 		}
