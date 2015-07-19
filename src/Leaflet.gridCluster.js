@@ -225,7 +225,7 @@ L.GridCluster = L.FeatureGroup.extend({
 	
 	_zoomEnd : function(e) {
 		if (!this._map) {//May have been removed from the map by a zoomEnd handler
-			console.log("map not found");
+			
 			return;
 		}
 
@@ -263,7 +263,7 @@ L.GridCluster = L.FeatureGroup.extend({
 	_cluster : function() {
 
 		if (!this._originalFeaturesGroup.getLayers().length) {
-			console.log("no points");
+			
 			return;
 		} else {
 
@@ -357,7 +357,7 @@ L.GridCluster = L.FeatureGroup.extend({
 									var latlngA = polygon.getBounds().getNorthWest();
 									var latlngB = polygon.getBounds().getNorthEast();
 									//calculate the max. size of the symbol and add a buffer so they don't touch each other
-									this._maxSymbolSize = Math.ceil( this._map.latLngToLayerPoint(latlngA).distanceTo(map.latLngToLayerPoint(latlngB)) )* 0.9;
+									this._maxSymbolSize = Math.ceil( this._map.latLngToLayerPoint(latlngA).distanceTo(this._map.latLngToLayerPoint(latlngB)) )* 0.9;
 									
 								}
 							} else {
@@ -396,8 +396,7 @@ L.GridCluster = L.FeatureGroup.extend({
 						
 						color = this._getClassValue(count, this._classDefinitions, this.options.colors);
 						
-						console.log(count + " has " + color);
-
+						
 						var style = this.options.cellStyle;
 						style.fillColor = color;
 
@@ -535,7 +534,7 @@ L.GridCluster = L.FeatureGroup.extend({
 		var numClasses = classDef.length;
 		
 		if(numClasses != representDef.length){
-			console.log("uh oh : NumClasses " + numClasses + " !=" + representDef.length);
+			
 			
 		}
 		var value;
@@ -590,7 +589,7 @@ L.GridCluster = L.FeatureGroup.extend({
 	},
 	_drawGrid : function(caller) {
 
-		console.log(caller + " requested drawGrid");
+		
 		// first clear the old grid lines
 		this._gridLinesGroup.clearLayers();
 
